@@ -1,0 +1,59 @@
+<!-- color mixer / 11.3.2026 -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Color Mixer</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="app.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <h1>Color Mixer</h1>
+  </header>
+
+  <main>
+    <!-- Color Pickers -->
+    <section class="color-inputs">
+      <div class="color-picker">
+        <label>Color 1</label>
+        <input type="color" id="color1" value="#ff0000" />
+      </div>
+
+      <div class="color-picker">
+        <label>Color 2</label>
+        <input type="color" id="color2" value="#00ff00" />
+      </div>
+
+      <div class="color-picker">
+        <label>Color 3</label>
+        <input type="color" id="color3" value="#0000ff" />
+      </div>
+    </section>
+
+    <!-- Mode Switch -->
+    <section class="mode-switch">
+      <button id="mode-rgb" class="active">RGB</button>
+      <button id="mode-hsl">HSL</button>
+    </section>
+
+    <!-- Preview Area -->
+    <section class="preview">
+      <div id="preview-box"></div>
+    </section>
+
+    <!-- Output -->
+    <section class="output">
+      <h2>Mixed Color</h2>
+      <p id="mixed-color-value">#000000</p>
+
+      <h2>Gradient CSS</h2>
+      <pre id="gradient-css"></pre>
+    </section>
+  </main>
+
+</body>
+</html>
