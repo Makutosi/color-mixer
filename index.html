@@ -29,8 +29,7 @@
         <button id="theme-btn" class="toolbar-btn" title="Toggle Dark Mode">
           <span id="theme-icon">☀️</span>
         </button>
-        
-        <button id="random-btn" class="toolbar-btn" title="Randomize Colors">
+        <button id="random-btn" class="toolbar-btn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
             <circle cx="8.5" cy="8.5" r="1.5"></circle>
@@ -44,26 +43,25 @@
       </div>
     </div>
 
-    <section class="color-inputs">
-      <div class="color-picker" id="wrapper1">
-        <div class="picker-container">
-          <input type="color" id="color1" value="#6366f1">
-        </div>
-        <span class="hex-label" id="label1">#6366F1</span>
+    <section class="color-inputs" id="drag-container">
+      <div class="color-picker" id="wrapper1" draggable="true">
+        <div class="picker-container"><input type="color" id="color1" value="#6366f1"></div>
+        <span class="code-label" id="label1" data-tooltip="Click to Copy">#6366F1</span>
       </div>
-      <div class="color-picker" id="wrapper2">
-        <div class="picker-container">
-          <input type="color" id="color2" value="#ec4899">
-        </div>
-        <span class="hex-label" id="label2">#EC4899</span>
+      <div class="color-picker" id="wrapper2" draggable="true">
+        <div class="picker-container"><input type="color" id="color2" value="#ec4899"></div>
+        <span class="code-label" id="label2" data-tooltip="Click to Copy">#EC4899</span>
       </div>
-      <div class="color-picker" id="wrapper3" style="display: none;">
-        <div class="picker-container">
-          <input type="color" id="color3" value="#f59e0b">
-        </div>
-        <span class="hex-label" id="label3">#F59E0B</span>
+      <div class="color-picker" id="wrapper3" draggable="true" style="display: none;">
+        <div class="picker-container"><input type="color" id="color3" value="#f59e0b"></div>
+        <span class="code-label" id="label3" data-tooltip="Click to Copy">#F59E0B</span>
       </div>
     </section>
+
+    <div class="format-toggle-area">
+       <span class="toggle-hint">Format:</span>
+       <button id="format-toggle-btn">HEX</button>
+    </div>
 
     <section class="controls">
       <div class="control-group">
@@ -88,8 +86,7 @@
         </div>
         <div class="control-group">
           <label>Variants</label>
-          <select id="grad-variant">
-            </select>
+          <select id="grad-variant"></select>
         </div>
       </div>
 
@@ -102,7 +99,6 @@
             <option value="grid">Grid</option>
             <option value="checker">Checkerboard</option>
             <option value="diagonal-lines">Diagonal Lines</option>
-            <option value="diagonal-stripes">Diagonal Stripes</option>
             <option value="waves">Waves</option>
           </select>
         </div>
@@ -131,6 +127,9 @@
     </section>
   </main>
   
-  <div id="toast" class="toast">Copied to clipboard!</div>
+  <footer>© 2026 Poco fermata</footer>
+  
+  <div id="toast-bottom" class="toast toast-bottom">CSS Copied!</div>
+  <div id="toast-top" class="toast toast-top">Color Code Copied!</div>
 </body>
 </html>
