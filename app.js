@@ -13,13 +13,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const gradientCss = document.getElementById('gradient-css');
   const headerDot = document.getElementById('header-dot');
   const formatToggleBtn = document.getElementById('format-toggle-btn');
-  const toastTop = document.getElementById('toast-top');
-  const toastBottom = document.getElementById('toast-bottom');
+  const toastMsg = document.getElementById('toast-msg');
+  const themeIcon = document.getElementById('theme-icon');
 
-  let activeColorCount = 2;
   let colorFormat = 'HEX'; 
 
-  // グラデーションのバリエーションデータ
   const variantsData = {
     'horizontal': [{ name: 'Top to Bottom', value: 'to bottom' }, { name: 'Bottom to Top', value: 'to top' }, { name: 'From Middle', value: 'middle-h' }],
     'vertical': [{ name: 'Left to Right', value: 'to right' }, { name: 'Right to Left', value: 'to left' }, { name: 'From Middle', value: 'middle-v' }],
@@ -29,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
     'from-center': [{ name: 'Center Out', value: 'excel-center' }]
   };
 
-  // HEXをRGB文字列に変換するヘルパー
   function hexToRgb(hex) {
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
@@ -37,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return `rgb(${r}, ${g}, ${b})`;
   }
 
-  // メインの表示更新処理
   function updateUI() {
     const currentPickers = [...container.querySelectorAll('.color-picker')].filter(el => el.style.display !== 'none');
     const colors = currentPickers.map(p => p.querySelector('input').value);
@@ -45,12 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let finalStyle = "";
     let bgSize = "auto";
 
-    // 1. 塗りつぶしモードの判定
     if (mode === 'gradient') {
       gradientArea.style.display = 'flex';
       patternArea.style.display = 'none';
       const variant = gradVariantSelect.value;
-      
       if (variant === 'middle-h') finalStyle = `linear-gradient(to bottom, ${colors[0]}, ${colors[1]}, ${colors[0]})`;
       else if (variant === 'middle-v') finalStyle = `linear-gradient(to right, ${colors[0]}, ${colors[1]}, ${colors[0]})`;
       else if (variant === 'middle-diag-up') finalStyle = `linear-gradient(45deg, ${colors[0]}, ${colors[1]}, ${colors[0]})`;
@@ -63,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
       patternArea.style.display = 'flex';
       const pattern = patternStyleSelect.value;
       const bg = colors[0], fg = colors[1];
-      
       switch(pattern) {
         case "dots": finalStyle = `radial-gradient(${fg} 15%, transparent 16%), ${bg}`; bgSize = "12px 12px"; break;
         case "polka": finalStyle = `radial-gradient(${fg} 35%, transparent 36%), ${bg}`; bgSize = "30px 30px"; break;
@@ -74,12 +67,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // 2. プレビューとCSSテキストの更新
     previewBox.style.background = finalStyle;
     previewBox.style.backgroundSize = bgSize;
     gradientCss.textContent = `background: ${finalStyle};${bgSize !== 'auto' ? ` background-size: ${bgSize};` : ''}`;
 
-    // 3. 平均色の計算と表示
     const avg = colors.reduce((acc, c) => {
       acc.r += parseInt(c.slice(1,3), 16); acc.g += parseInt(c.slice(3,5), 16); acc.b += parseInt(c.slice(5,7), 16);
       return acc;
@@ -88,21 +79,18 @@ document.addEventListener('DOMContentLoaded', () => {
     mixedValue.textContent = hex; 
     headerDot.style.backgroundColor = hex;
 
-    // 4. 各ピッカーのラベル更新
     currentPickers.forEach(p => {
       const hexVal = p.querySelector('input').value.toUpperCase();
       p.querySelector('.code-label').textContent = (colorFormat === 'HEX') ? hexVal : hexToRgb(hexVal);
     });
   }
 
-  // カラーフォーマットの切り替え
   formatToggleBtn.addEventListener('click', () => {
     colorFormat = (colorFormat === 'HEX') ? 'RGB' : 'HEX';
     formatToggleBtn.textContent = colorFormat;
     updateUI();
   });
 
-  // ドラッグ＆ドロップ処理
   let draggedItem = null;
   container.querySelectorAll('.color-picker').forEach(picker => {
     picker.addEventListener('dragstart', () => { draggedItem = picker; setTimeout(() => picker.classList.add('dragging'), 0); });
@@ -118,49 +106,31 @@ document.addEventListener('DOMContentLoaded', () => {
       if (offset < 0 && offset > closest.offset) return { offset, element: child };
       return closest;
     }, { offset: Number.NEGATIVE_INFINITY }).element;
-    if (!afterElement) container.appendChild(draggedItem);
+    if (!afterElement) container.insertBefore(draggedItem, formatToggleBtn);
     else container.insertBefore(draggedItem, afterElement);
   });
 
-  // トースト表示機能付きコピー関数
-  function copyWithToast(text, isTop) {
+  function showMinimalToast(text) {
     navigator.clipboard.writeText(text).then(() => {
-      const targetToast = isTop ? toastTop : toastBottom;
-      // すでに表示されている場合は一度消す
-      targetToast.classList.remove('show');
-      void targetToast.offsetWidth; // リフローを強制
-      targetToast.classList.add('show');
-      setTimeout(() => targetToast.classList.remove('show'), 2000);
+      toastMsg.classList.add('show');
+      setTimeout(() => toastMsg.classList.remove('show'), 1000);
     });
   }
 
-  // クリックイベントの一括管理
   document.addEventListener('click', e => {
     const target = e.target;
-    
-    // 1. 個別のカラーラベル（上トースト）
-    if (target.classList.contains('code-label')) {
-      copyWithToast(target.textContent, true);
-    }
-    
-    // 2. Mixed Result（上トースト：カラーコードなので）
-    if (target.closest('#mixed-color-btn')) {
-      copyWithToast(mixedValue.textContent, true);
-    }
-    
-    // 3. CSS Property（下トースト）
-    if (target.closest('#gradient-css-btn')) {
-      copyWithToast(gradientCss.textContent, false);
+    if (target.classList.contains('code-label') || target.closest('#mixed-color-btn') || target.closest('#gradient-css-btn')) {
+      const copyVal = target.textContent || target.innerText || mixedValue.textContent;
+      showMinimalToast(copyVal);
     }
   });
 
-  // ダークモード切り替え
   document.getElementById('theme-btn').addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
-    document.getElementById('theme-icon').textContent = document.body.classList.contains('dark-mode') ? '🌙' : '☀️';
+    const isDark = document.body.classList.contains('dark-mode');
+    themeIcon.textContent = isDark ? '☾' : '☀︎';
   });
 
-  // ランダムカラー
   document.getElementById('random-btn').addEventListener('click', () => {
     container.querySelectorAll('input[type="color"]').forEach(i => {
       i.value = "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
@@ -168,24 +138,16 @@ document.addEventListener('DOMContentLoaded', () => {
     updateUI();
   });
 
-  // タブ切り替え（2色 / 3色）
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', e => {
       document.querySelector('.tab-btn.active').classList.remove('active');
       e.target.classList.add('active');
-      activeColorCount = parseInt(e.target.dataset.count);
-      
       const wrapper3 = document.getElementById('wrapper3');
-      if (activeColorCount === 3) {
-        wrapper3.style.display = 'flex';
-      } else {
-        wrapper3.style.display = 'none';
-      }
+      wrapper3.style.display = (e.target.dataset.count === "3") ? 'flex' : 'none';
       updateUI();
     });
   });
 
-  // シェーディングスタイルに合わせたバリエーションの生成
   function populateVariants() {
     const style = shadingStyleSelect.value;
     gradVariantSelect.innerHTML = '';
@@ -197,17 +159,8 @@ document.addEventListener('DOMContentLoaded', () => {
     updateUI();
   }
 
-  // イベントリスナーの登録
-  [fillModeSelect, shadingStyleSelect, gradVariantSelect, patternStyleSelect].forEach(el => {
-    el.addEventListener('change', updateUI);
-  });
-  
+  [fillModeSelect, shadingStyleSelect, gradVariantSelect, patternStyleSelect].forEach(el => el.addEventListener('change', updateUI));
   shadingStyleSelect.addEventListener('change', populateVariants);
-  
-  container.querySelectorAll('input').forEach(i => {
-    i.addEventListener('input', updateUI);
-  });
-
-  // 初期化
+  container.querySelectorAll('input').forEach(i => i.addEventListener('input', updateUI));
   populateVariants();
 });

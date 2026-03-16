@@ -28,73 +28,73 @@ body {
 
 main { width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 1.2rem; }
 
-.logo { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; }
-.logo-text { font-size: 1.3rem; font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; }
+header { width: 100%; max-width: 440px; display: flex; justify-content: center; }
+.logo { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 2rem; }
+.logo-text { font-size: 1.2rem; font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1; }
 .logo-text span { font-weight: 800; }
-.dot { width: 14px; height: 14px; border-radius: 50%; background: #6366f1; transition: background 0.3s; }
+.dot { width: 12px; height: 12px; border-radius: 50%; background: #6366f1; transition: background 0.3s; }
 
-.toolbar { display: flex; justify-content: space-between; align-items: center; }
-.tab-container { display: flex; gap: 4px; background: rgba(0,0,0,0.06); padding: 4px; border-radius: 20px; }
+.toolbar { display: flex; justify-content: space-between; align-items: center; height: 36px; }
+.tab-container { display: flex; gap: 4px; background: rgba(0,0,0,0.06); padding: 4px; border-radius: 20px; align-items: center; }
 body.dark-mode .tab-container { background: rgba(255,255,255,0.1); }
+.toolbar-actions { display: flex; gap: 8px; align-items: center; height: 100%; }
 
 .tab-btn, .toolbar-btn {
-  background: none; border: none; padding: 6px 14px;
+  background: none; border: none; padding: 6px 12px;
   font-size: 0.75rem; font-weight: 700; color: var(--text-muted);
   cursor: pointer; border-radius: 16px; transition: all 0.2s;
-  display: flex; align-items: center;
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; height: 28px; line-height: 1;
 }
 .tab-btn.active, .toolbar-btn { background: var(--btn-bg); color: var(--text-main); box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
 
-/* Color Pickers Section */
 .color-inputs { 
   display: flex; flex-direction: row; justify-content: center; 
-  gap: 48px; /* 2色のときの間隔をさらに広く */
-  padding: 2.5rem 0.5rem; 
+  gap: 48px; padding: 2.5rem 0.5rem 4rem 0.5rem; position: relative;
 }
-/* 3色のときは間隔を自動で詰める */
 .color-inputs:has(#wrapper3[style*="display: flex"]) { gap: 24px; }
 
-.color-picker { display: flex; flex-direction: column; align-items: center; gap: 15px; cursor: grab; }
+.color-picker { display: flex; flex-direction: column; align-items: center; gap: 15px; cursor: grab; z-index: 2; }
 .picker-container { width: 64px; height: 64px; border-radius: 50%; overflow: hidden; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.12); position: relative; transition: transform 0.2s; }
-.picker-container:hover { transform: scale(1.05); }
 input[type="color"] { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; cursor: pointer; border: none; }
 
 .code-label {
-  position: relative; font-family: monospace; font-size: 0.7rem; font-weight: 700;
+  font-family: monospace; font-size: 0.7rem; font-weight: 700;
   background: rgba(0,0,0,0.05); padding: 6px 0; width: 100px; text-align: center;
   border-radius: 10px; color: var(--text-muted); cursor: pointer; transition: all 0.2s;
-  display: inline-block;
 }
 body.dark-mode .code-label { background: rgba(255,255,255,0.1); }
-.code-label:hover { background: var(--btn-bg); color: var(--text-main); transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
-.code-label::after { content: attr(data-tooltip); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%); background: #1E293B; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.55rem; opacity: 0; pointer-events: none; transition: 0.2s; white-space: nowrap; z-index: 10; }
-.code-label:hover::after { opacity: 1; bottom: 130%; }
 
-.format-toggle-area { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: -10px; }
-.toggle-hint { font-size: 0.6rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; }
-#format-toggle-btn { background: var(--btn-bg); border: 1px solid rgba(0,0,0,0.1); padding: 2px 10px; border-radius: 20px; font-size: 0.6rem; font-weight: 800; color: var(--accent); cursor: pointer; }
+#format-toggle-btn { 
+  position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+  background: var(--btn-bg); border: 1px solid rgba(0,0,0,0.1); padding: 3px 12px; 
+  border-radius: 20px; font-size: 0.65rem; font-weight: 800; color: #4F46E5; 
+  cursor: pointer; transition: all 0.2s ease; z-index: 5;
+}
+body.dark-mode #format-toggle-btn { background: #1E293B; color: #818CF8; border-color: rgba(255,255,255,0.2); }
 
 section { background: var(--card-bg); backdrop-filter: blur(12px); border-radius: 20px; padding: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.4); }
 .options-area { display: flex; flex-direction: column; gap: 1.2rem; margin-top: 1.2rem; }
-.control-group { display: flex; flex-direction: column; gap: 8px; }
-.control-group label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.control-group label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; display: block; }
 select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); background: white; color: var(--text-main); font-size: 0.9rem; outline: none; cursor: pointer; }
 body.dark-mode select { background: #1E293B; border-color: rgba(255,255,255,0.1); color: white; }
 
 #preview-box { width: 100%; height: 200px; border-radius: 15px; transition: background 0.3s; }
 
-.output { display: flex; flex-direction: column; gap: 1.5rem; }
+/* 修正箇所: output内のアイテム間隔を調整 */
+.output { display: flex; flex-direction: column; gap: 1.5rem; } /* アイテムごとの間隔 */
 .result-item small { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; display: block; }
 .copy-box { background: rgba(0,0,0,0.04); padding: 1rem; border-radius: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
 body.dark-mode .copy-box { background: rgba(255,255,255,0.05); }
-.copy-box:hover { background: var(--btn-bg); transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 .copy-icon { font-size: 0.6rem; font-weight: 800; color: var(--text-muted); border: 1.5px solid var(--text-muted); padding: 2px 10px; border-radius: 20px; }
 
-.toast { position: fixed; left: 50%; transform: translateX(-50%); background: #1E293B; color: white; padding: 0.8rem 1.6rem; border-radius: 50px; opacity: 0; transition: 0.4s; pointer-events: none; z-index: 2000; font-size: 0.8rem; font-weight: 600; }
-.toast-top { top: 2rem; }
-.toast-bottom { bottom: 2rem; }
-.toast.show { opacity: 1; }
-.toast-top.show { transform: translateX(-50%) translateY(10px); }
-.toast-bottom.show { transform: translateX(-50%) translateY(-10px); }
+.toast {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -30%);
+  background: rgba(0, 0, 0, 0.85); color: #fff; padding: 0.6rem 1.4rem; border-radius: 4px;
+  opacity: 0; visibility: hidden; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 3000; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.05em;
+  text-transform: uppercase; backdrop-filter: blur(8px); pointer-events: none;
+}
+.toast.show { opacity: 1; visibility: visible; transform: translate(-50%, -50%); }
 
 footer { padding: 2rem 0; font-size: 0.7rem; color: var(--text-muted); text-align: center; }

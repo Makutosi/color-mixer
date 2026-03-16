@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Professional Color Mixer</title>
+  <title>Color Mixer Professional</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
   <script src="app.js" defer></script>
@@ -25,12 +25,12 @@
         <button class="tab-btn" data-count="3">3 Colors</button>
       </div>
       
-      <div style="display: flex; gap: 8px;">
+      <div class="toolbar-actions">
         <button id="theme-btn" class="toolbar-btn" title="Toggle Dark Mode">
-          <span id="theme-icon">☀️</span>
+          <span id="theme-icon">☀︎</span>
         </button>
         <button id="random-btn" class="toolbar-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
             <circle cx="8.5" cy="8.5" r="1.5"></circle>
             <circle cx="15.5" cy="15.5" r="1.5"></circle>
@@ -38,7 +38,7 @@
             <circle cx="8.5" cy="15.5" r="1.5"></circle>
             <circle cx="12" cy="12" r="1.5"></circle>
           </svg>
-          Random
+          <span>Random</span>
         </button>
       </div>
     </div>
@@ -46,22 +46,18 @@
     <section class="color-inputs" id="drag-container">
       <div class="color-picker" id="wrapper1" draggable="true">
         <div class="picker-container"><input type="color" id="color1" value="#6366f1"></div>
-        <span class="code-label" id="label1" data-tooltip="Click to Copy">#6366F1</span>
+        <span class="code-label" id="label1">#6366F1</span>
       </div>
       <div class="color-picker" id="wrapper2" draggable="true">
         <div class="picker-container"><input type="color" id="color2" value="#ec4899"></div>
-        <span class="code-label" id="label2" data-tooltip="Click to Copy">#EC4899</span>
+        <span class="code-label" id="label2">#EC4899</span>
       </div>
       <div class="color-picker" id="wrapper3" draggable="true" style="display: none;">
         <div class="picker-container"><input type="color" id="color3" value="#f59e0b"></div>
-        <span class="code-label" id="label3" data-tooltip="Click to Copy">#F59E0B</span>
+        <span class="code-label" id="label3">#F59E0B</span>
       </div>
+      <button id="format-toggle-btn">HEX</button>
     </section>
-
-    <div class="format-toggle-area">
-       <span class="toggle-hint">Format:</span>
-       <button id="format-toggle-btn">HEX</button>
-    </div>
 
     <section class="controls">
       <div class="control-group">
@@ -111,7 +107,7 @@
 
     <section class="output">
       <div class="result-item">
-        <small>Mixed Result (Average)</small>
+        <small>Mixed Result</small>
         <div class="copy-box" id="mixed-color-btn">
           <span id="mixed-color-value">#000000</span>
           <span class="copy-icon">Copy</span>
@@ -129,7 +125,6 @@
   
   <footer>© 2026 Poco fermata</footer>
   
-  <div id="toast-bottom" class="toast toast-bottom">CSS Copied!</div>
-  <div id="toast-top" class="toast toast-top">Color Code Copied!</div>
+  <div id="toast-msg" class="toast">Copied</div>
 </body>
 </html>
