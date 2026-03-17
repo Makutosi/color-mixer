@@ -35,18 +35,26 @@ header { width: 100%; max-width: 440px; display: flex; justify-content: center; 
 .dot { width: 12px; height: 12px; border-radius: 50%; background: #6366f1; transition: background 0.3s; }
 
 .toolbar { display: flex; justify-content: space-between; align-items: center; height: 36px; }
-.tab-container { display: flex; gap: 4px; background: rgba(0,0,0,0.06); padding: 4px; border-radius: 20px; align-items: center; }
-body.dark-mode .tab-container { background: rgba(255,255,255,0.1); }
+.tab-container, .random-switch-container { 
+  display: flex; gap: 2px; background: rgba(0,0,0,0.06); padding: 3px; border-radius: 12px; align-items: center; 
+}
+body.dark-mode .tab-container, body.dark-mode .random-switch-container { background: rgba(255,255,255,0.1); }
+
 .toolbar-actions { display: flex; gap: 8px; align-items: center; height: 100%; }
 
-.tab-btn, .toolbar-btn {
+.tab-btn, .random-mode-btn, .toolbar-btn {
   background: none; border: none; padding: 6px 12px;
   font-size: 0.75rem; font-weight: 700; color: var(--text-muted);
-  cursor: pointer; border-radius: 16px; transition: all 0.2s;
+  cursor: pointer; border-radius: 9px; transition: all 0.2s;
   display: flex; align-items: center; justify-content: center;
   gap: 6px; height: 28px; line-height: 1;
 }
-.tab-btn.active, .toolbar-btn { background: var(--btn-bg); color: var(--text-main); box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+.random-mode-btn { width: 32px; padding: 0; }
+.toolbar-btn { background: var(--btn-bg); color: var(--text-main); box-shadow: 0 2px 6px rgba(0,0,0,0.08); border-radius: 16px; }
+
+.tab-btn.active, .random-mode-btn.active { 
+  background: var(--btn-bg); color: var(--text-main); box-shadow: 0 2px 5px rgba(0,0,0,0.08); 
+}
 
 .color-inputs { 
   display: flex; flex-direction: row; justify-content: center; 
@@ -81,8 +89,7 @@ body.dark-mode select { background: #1E293B; border-color: rgba(255,255,255,0.1)
 
 #preview-box { width: 100%; height: 200px; border-radius: 15px; transition: background 0.3s; }
 
-/* 修正箇所: output内のアイテム間隔を調整 */
-.output { display: flex; flex-direction: column; gap: 1.5rem; } /* アイテムごとの間隔 */
+.output { display: flex; flex-direction: column; gap: 1.5rem; }
 .result-item small { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; display: block; }
 .copy-box { background: rgba(0,0,0,0.04); padding: 1rem; border-radius: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
 body.dark-mode .copy-box { background: rgba(255,255,255,0.05); }

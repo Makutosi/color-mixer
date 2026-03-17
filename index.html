@@ -5,7 +5,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Color Mixer Professional</title>
+  <title>Color Mixer</title>
+
+  <link id="favicon" rel="icon" type="image/svg+xml">
+
+  <meta property="og:title" content="Color Mixer" />
+  <meta property="og:description" content="A minimalist color tool for creating beautiful gradients and patterns with intuitive controls." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://your-username.github.io/your-repo-name/" />
+  <meta property="og:image" content="https://your-username.github.io/your-repo-name/ogp.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
   <script src="app.js" defer></script>
@@ -24,22 +34,20 @@
         <button class="tab-btn active" data-count="2">2 Colors</button>
         <button class="tab-btn" data-count="3">3 Colors</button>
       </div>
-      
+
       <div class="toolbar-actions">
         <button id="theme-btn" class="toolbar-btn" title="Toggle Dark Mode">
           <span id="theme-icon">☀︎</span>
         </button>
-        <button id="random-btn" class="toolbar-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-            <circle cx="8.5" cy="8.5" r="1.5"></circle>
-            <circle cx="15.5" cy="15.5" r="1.5"></circle>
-            <circle cx="15.5" cy="8.5" r="1.5"></circle>
-            <circle cx="8.5" cy="15.5" r="1.5"></circle>
-            <circle cx="12" cy="12" r="1.5"></circle>
-          </svg>
-          <span>Random</span>
-        </button>
+        
+        <div class="random-switch-container">
+          <button id="chaos-btn" class="random-mode-btn active" title="Chaos Mode (Random)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><circle cx="15.5" cy="15.5" r="1.5"></circle><circle cx="15.5" cy="8.5" r="1.5"></circle><circle cx="8.5" cy="15.5" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle></svg>
+          </button>
+          <button id="harmonic-btn" class="random-mode-btn" title="Harmonic Mode (Theory)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -67,7 +75,6 @@
           <option value="pattern">Pattern Fill</option>
         </select>
       </div>
-
       <div id="gradient-area" class="options-area">
         <div class="control-group">
           <label>Shading Style</label>
@@ -85,7 +92,6 @@
           <select id="grad-variant"></select>
         </div>
       </div>
-
       <div id="pattern-area" class="options-area" style="display: none;">
         <div class="control-group">
           <label>Pattern Style</label>
@@ -124,7 +130,6 @@
   </main>
   
   <footer>© 2026 Poco fermata</footer>
-  
   <div id="toast-msg" class="toast">Copied</div>
 </body>
 </html>

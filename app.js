@@ -15,8 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const formatToggleBtn = document.getElementById('format-toggle-btn');
   const toastMsg = document.getElementById('toast-msg');
   const themeIcon = document.getElementById('theme-icon');
+  const favicon = document.getElementById('favicon');
+  
+  const chaosBtn = document.getElementById('chaos-btn');
+  const harmonicBtn = document.getElementById('harmonic-btn');
 
-  let colorFormat = 'HEX'; 
+  let colorFormat = 'HEX';
+  let currentRandomMode = 'chaos';
 
   const variantsData = {
     'horizontal': [{ name: 'Top to Bottom', value: 'to bottom' }, { name: 'Bottom to Top', value: 'to top' }, { name: 'From Middle', value: 'middle-h' }],
@@ -32,6 +37,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const g = parseInt(hex.slice(3, 5), 16);
     const b = parseInt(hex.slice(5, 7), 16);
     return `rgb(${r}, ${g}, ${b})`;
+  }
+
+  function hslToHex(h, s, l) {
+    l /= 100;
+    const a = s * Math.min(l, 1 - l) / 100;
+    const f = n => {
+      const k = (n + h / 30) % 12;
+      const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+      return Math.round(255 * color).toString(16).padStart(2, '0');
+    };
+    return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
   }
 
   function updateUI() {
@@ -79,12 +95,50 @@ document.addEventListener('DOMContentLoaded', () => {
     mixedValue.textContent = hex; 
     headerDot.style.backgroundColor = hex;
 
+    // Favicon 更新
+    // app.js の updateUI 関数内
+    const encodedHex = hex.replace('#', '%23');
+    const svgData = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="${encodedHex}"/></svg>`;
+    favicon.setAttribute('href', svgData);
+
     currentPickers.forEach(p => {
       const hexVal = p.querySelector('input').value.toUpperCase();
       p.querySelector('.code-label').textContent = (colorFormat === 'HEX') ? hexVal : hexToRgb(hexVal);
     });
   }
 
+  // --- Random Logic ---
+  function generateRandomColors() {
+    const inputs = container.querySelectorAll('input[type="color"]');
+    if (currentRandomMode === 'harmonic') {
+      const baseHue = Math.floor(Math.random() * 360);
+      inputs.forEach((input, index) => {
+        const h = (baseHue + (index * 137.5)) % 360;
+        input.value = hslToHex(h, 65, 55);
+      });
+    } else {
+      inputs.forEach(i => {
+        i.value = "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+      });
+    }
+    updateUI();
+  }
+
+  chaosBtn.addEventListener('click', () => {
+    currentRandomMode = 'chaos';
+    chaosBtn.classList.add('active');
+    harmonicBtn.classList.remove('active');
+    generateRandomColors();
+  });
+
+  harmonicBtn.addEventListener('click', () => {
+    currentRandomMode = 'harmonic';
+    harmonicBtn.classList.add('active');
+    chaosBtn.classList.remove('active');
+    generateRandomColors();
+  });
+
+  // --- UI Handlers ---
   formatToggleBtn.addEventListener('click', () => {
     colorFormat = (colorFormat === 'HEX') ? 'RGB' : 'HEX';
     formatToggleBtn.textContent = colorFormat;
@@ -127,23 +181,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('theme-btn').addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
-    const isDark = document.body.classList.contains('dark-mode');
-    themeIcon.textContent = isDark ? '☾' : '☀︎';
-  });
-
-  document.getElementById('random-btn').addEventListener('click', () => {
-    container.querySelectorAll('input[type="color"]').forEach(i => {
-      i.value = "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-    });
-    updateUI();
+    themeIcon.textContent = document.body.classList.contains('dark-mode') ? '☾' : '☀︎';
   });
 
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', e => {
       document.querySelector('.tab-btn.active').classList.remove('active');
       e.target.classList.add('active');
-      const wrapper3 = document.getElementById('wrapper3');
-      wrapper3.style.display = (e.target.dataset.count === "3") ? 'flex' : 'none';
+      document.getElementById('wrapper3').style.display = (e.target.dataset.count === "3") ? 'flex' : 'none';
       updateUI();
     });
   });
@@ -162,5 +207,8 @@ document.addEventListener('DOMContentLoaded', () => {
   [fillModeSelect, shadingStyleSelect, gradVariantSelect, patternStyleSelect].forEach(el => el.addEventListener('change', updateUI));
   shadingStyleSelect.addEventListener('change', populateVariants);
   container.querySelectorAll('input').forEach(i => i.addEventListener('input', updateUI));
+  
   populateVariants();
+
+  updateUI();
 });
