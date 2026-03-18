@@ -272,9 +272,18 @@ document.addEventListener('DOMContentLoaded', () => {
   DOM.shadingStyle.addEventListener('change', populateVariants);
   DOM.gradVariant.addEventListener('change', updateUI);
   DOM.patternStyle.addEventListener('change', updateUI);
+// --- この部分を書き換えます ---
   DOM.formatToggleBtn.addEventListener('click', () => {
+    // 1. 状態を反転 (HEX ⇄ RGB)
     state.format = state.format === 'HEX' ? 'RGB' : 'HEX';
+
+    // 2. ボタンの表示文字を更新
     DOM.formatToggleBtn.textContent = state.format;
+
+    // 3. ツールチップ (title) を「次」の状態に合わせて更新
+    DOM.formatToggleBtn.title = state.format === 'HEX' ? 'Switch to RGB' : 'Switch to HEX';
+
+    // 4. UI全体（ラベルなど）を更新
     updateUI();
   });
 
@@ -291,10 +300,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Theme Toggle
+// Theme Toggle (ツールチップ連動版)
   document.getElementById('theme-btn').addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
-    DOM.themeIcon.textContent = document.body.classList.contains('dark-mode') ? '☾' : '☀︎';
+    const isDark = document.body.classList.toggle('dark-mode');
+    
+    // アイコンの切り替え
+    DOM.themeIcon.textContent = isDark ? '☾' : '☀︎';
+    
+    // ツールチップ（マウスを重ねた時の文字）の切り替え
+    const btn = document.getElementById('theme-btn');
+    btn.title = isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
   });
 
   // =====================
