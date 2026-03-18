@@ -70,11 +70,12 @@
     <section class="controls">
       <div class="control-group">
         <label>Fill Mode</label>
-        <select id="fill-mode">
-          <option value="gradient">Gradient Fill</option>
-          <option value="pattern">Pattern Fill</option>
-        </select>
+        <div class="tab-container full-width" id="fill-mode-tabs">
+          <button class="mode-tab-btn active" data-mode="gradient">Gradient</button>
+          <button class="mode-tab-btn" data-mode="pattern">Pattern</button>
+        </div>
       </div>
+
       <div id="gradient-area" class="options-area">
         <div class="control-group">
           <label>Shading Style</label>
@@ -87,11 +88,12 @@
             <option value="from-center">From Center</option>
           </select>
         </div>
-        <div class="control-group">
+        <div class="control-group" id="variant-group">
           <label>Variants</label>
           <select id="grad-variant"></select>
         </div>
       </div>
+
       <div id="pattern-area" class="options-area" style="display: none;">
         <div class="control-group">
           <label>Pattern Style</label>
