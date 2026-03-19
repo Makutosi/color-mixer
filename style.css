@@ -1,5 +1,8 @@
 /* color mixer / 13.3.2026 */
 
+/* ==========================================================================
+   1. CSS Variables (Theming)
+   ========================================================================== */
 :root {
   --bg-color: #F0EEE9; 
   --card-bg: rgba(255, 255, 255, 0.75); 
@@ -9,6 +12,7 @@
   --accent: #6366f1;
 }
 
+/* Dark mode overrides */
 body.dark-mode {
   --bg-color: #0F172A;
   --card-bg: rgba(30, 41, 59, 0.85);
@@ -17,112 +21,404 @@ body.dark-mode {
   --btn-bg: #475569;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+/* ==========================================================================
+   2. Global Reset & Base Styles
+   ========================================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
 
 body {
-  background-color: var(--bg-color); color: var(--text-main);
-  min-height: 100vh; padding: 2rem 1rem;
-  display: flex; flex-direction: column; align-items: center;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   transition: all 0.4s ease;
 }
 
-main { width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 1.2rem; }
-
-header { width: 100%; max-width: 440px; display: flex; justify-content: center; }
-.logo { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 2rem; }
-.logo-text { font-size: 1.2rem; font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1; }
-.logo-text span { font-weight: 800; }
-.dot { width: 12px; height: 12px; border-radius: 50%; background: #6366f1; transition: background 0.3s; }
-
-.toolbar { display: flex; justify-content: space-between; align-items: center; height: 36px; }
-.tab-container, .random-switch-container { 
-  display: flex; gap: 2px; background: rgba(0,0,0,0.06); padding: 3px; border-radius: 12px; align-items: center; 
-}
-body.dark-mode .tab-container, body.dark-mode .random-switch-container { background: rgba(255,255,255,0.1); }
-
-.toolbar-actions { display: flex; gap: 8px; align-items: center; height: 100%; }
-
-.tab-btn, .random-mode-btn, .toolbar-btn {
-  background: none; border: none; padding: 6px 12px;
-  font-size: 0.75rem; font-weight: 700; color: var(--text-muted);
-  cursor: pointer; border-radius: 9px; transition: all 0.2s;
-  display: flex; align-items: center; justify-content: center;
-  gap: 6px; height: 28px; line-height: 1;
-}
-.random-mode-btn { width: 32px; padding: 0; }
-.toolbar-btn { background: var(--btn-bg); color: var(--text-main); box-shadow: 0 2px 6px rgba(0,0,0,0.08); border-radius: 16px; }
-
-.tab-btn.active, .random-mode-btn.active { 
-  background: var(--btn-bg); color: var(--text-main); box-shadow: 0 2px 5px rgba(0,0,0,0.08); 
+main {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
 }
 
-.color-inputs { 
-  display: flex; flex-direction: row; justify-content: center; 
-  gap: 48px; padding: 2.5rem 0.5rem 4rem 0.5rem; position: relative;
+/* ==========================================================================
+   3. Header & Navigation
+   ========================================================================== */
+
+header {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  justify-content: center;
 }
-.color-inputs:has(#wrapper3[style*="display: flex"]) { gap: 24px; }
 
-.color-picker { display: flex; flex-direction: column; align-items: center; gap: 15px; cursor: grab; z-index: 2; }
-.picker-container { width: 64px; height: 64px; border-radius: 50%; overflow: hidden; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.12); position: relative; transition: transform 0.2s; }
-input[type="color"] { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; cursor: pointer; border: none; }
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 2rem;
+}
 
+.logo-text {
+  font-size: 1.2rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.logo-text span {
+  font-weight: 800;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  transition: background 0.3s;
+}
+
+/* ==========================================================================
+   4. Toolbar & Controls
+   ========================================================================== */
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 36px;
+}
+
+/* Container for tabs and mode switches */
+.tab-container,
+.random-switch-container {
+  display: flex;
+  gap: 2px;
+  background: rgba(0, 0, 0, 0.06);
+  padding: 3px;
+  border-radius: 12px;
+  align-items: center;
+}
+
+/* Dark mode adjustment for containers */
+body.dark-mode .tab-container,
+body.dark-mode .random-switch-container {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.toolbar-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  height: 100%;
+}
+
+/* Shared styles for all interactive buttons in the toolbar */
+.tab-btn,
+.random-mode-btn,
+.toolbar-btn {
+  background: none;
+  border: none;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 9px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+  line-height: 1;
+}
+
+/* Specific styling for the dice/random buttons */
+.random-mode-btn {
+  width: 32px;
+  padding: 0;
+}
+
+/* Theme toggle button styling */
+.toolbar-btn {
+  background: var(--btn-bg);
+  color: var(--text-main);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+}
+
+/* Highlighting the selected tab/mode */
+.tab-btn.active,
+.random-mode-btn.active {
+  background: var(--btn-bg);
+  color: var(--text-main);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================================================
+   5. Color Input Section
+   ========================================================================== */
+
+.color-inputs {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 48px;
+  padding: 2.5rem 0.5rem 4rem 0.5rem;
+  position: relative;
+}
+
+/* Reduce gap when the 3rd color picker is active (to prevent overflow) */
+.color-inputs:has(#wrapper3[style*="display: flex"]) {
+  gap: 24px;
+}
+
+.color-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  cursor: grab;
+  z-index: 2;
+}
+
+/* The circular frame for the color input */
+.picker-container {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+  position: relative;
+  transition: transform 0.2s;
+}
+
+/* Expand the hidden native color input to cover the circular container */
+input[type="color"] {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  cursor: pointer;
+  border: none;
+}
+
+/* Label displaying the Hex or RGB value below the picker */
 .code-label {
-  font-family: monospace; font-size: 0.7rem; font-weight: 700;
-  background: rgba(0,0,0,0.05); padding: 6px 0; width: 100px; text-align: center;
-  border-radius: 10px; color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+  font-family: monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 6px 0;
+  width: 100px;
+  text-align: center;
+  border-radius: 10px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
 }
-body.dark-mode .code-label { background: rgba(255,255,255,0.1); }
 
-#format-toggle-btn { 
-  position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
-  background: var(--btn-bg); border: 1px solid rgba(0,0,0,0.1); padding: 3px 12px; 
-  border-radius: 20px; font-size: 0.65rem; font-weight: 800; color: #4F46E5; 
-  cursor: pointer; transition: all 0.2s ease; z-index: 5;
+body.dark-mode .code-label {
+  background: rgba(255, 255, 255, 0.1);
 }
-body.dark-mode #format-toggle-btn { background: #1E293B; color: #818CF8; border-color: rgba(255,255,255,0.2); }
 
-section { background: var(--card-bg); backdrop-filter: blur(12px); border-radius: 20px; padding: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.4); }
-.options-area { display: flex; flex-direction: column; gap: 1.2rem; margin-top: 1.2rem; }
-.control-group label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; display: block; }
-select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); background: white; color: var(--text-main); font-size: 0.9rem; outline: none; cursor: pointer; }
-body.dark-mode select { background: #1E293B; border-color: rgba(255,255,255,0.1); color: white; }
+/* HEX/RGB format toggle floating button */
+#format-toggle-btn {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--btn-bg);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #4F46E5;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 5;
+}
 
-#preview-box { width: 100%; height: 200px; border-radius: 15px; transition: background 0.3s; }
+body.dark-mode #format-toggle-btn {
+  background: #1E293B;
+  color: #818CF8;
+  border-color: rgba(255, 255, 255, 0.2);
+}
 
-.output { display: flex; flex-direction: column; gap: 1.5rem; }
-.result-item small { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; display: block; }
-.copy-box { background: rgba(0,0,0,0.04); padding: 1rem; border-radius: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
-body.dark-mode .copy-box { background: rgba(255,255,255,0.05); }
-.copy-icon { font-size: 0.6rem; font-weight: 800; color: var(--text-muted); border: 1.5px solid var(--text-muted); padding: 2px 10px; border-radius: 20px; }
+/* ==========================================================================
+   6. Preview & Output
+   ========================================================================== */
 
+/* Glassmorphism card effect for control and output sections */
+section {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.options-area {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 1.2rem;
+}
+
+.control-group label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* Styled dropdown selectors */
+select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: white;
+  color: var(--text-main);
+  font-size: 0.9rem;
+  outline: none;
+  cursor: pointer;
+}
+
+body.dark-mode select {
+  background: #1E293B;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+/* Main preview box where gradients/patterns are rendered */
+#preview-box {
+  width: 100%;
+  height: 200px;
+  border-radius: 15px;
+  transition: background 0.3s;
+}
+
+.output {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.result-item small {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* Clickable box for copying color values and CSS code */
+.copy-box {
+  background: rgba(0, 0, 0, 0.04);
+  padding: 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: 0.2s;
+}
+
+body.dark-mode .copy-box {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.copy-icon {
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  border: 1.5px solid var(--text-muted);
+  padding: 2px 10px;
+  border-radius: 20px;
+}
+
+/* ==========================================================================
+   7. Notifications & Footer
+   ========================================================================== */
+
+/* Toast notification popup centered on screen */
 .toast {
-  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -30%);
-  background: rgba(0, 0, 0, 0.85); color: #fff; padding: 0.6rem 1.4rem; border-radius: 4px;
-  opacity: 0; visibility: hidden; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 3000; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.05em;
-  text-transform: uppercase; backdrop-filter: blur(8px); pointer-events: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -30%);
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 0.6rem 1.4rem;
+  border-radius: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 3000;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  pointer-events: none;
 }
-.toast.show { opacity: 1; visibility: visible; transform: translate(-50%, -50%); }
 
-footer { padding: 2rem 0; font-size: 0.7rem; color: var(--text-muted); text-align: center; }
+/* Class added by JS to trigger the toast animation */
+.toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%);
+}
 
-/* --- Fill Mode 用のタブスタイル --- */
+footer {
+  padding: 2rem 0;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* ==========================================================================
+   8. Fill Mode Tab Styles (Gradient vs Pattern)
+   ========================================================================== */
+
+/* Full-width container for the mode toggle tabs */
 .full-width {
   width: 100%;
   display: flex;
   margin-top: 8px;
-  background: rgba(0,0,0,0.06); /* 背景を少し暗くして枠組みを作る */
+  background: rgba(0, 0, 0, 0.06); /* Subtle dark background to define the track */
   padding: 3px;
   border-radius: 12px;
 }
 
-/* ダークモード時の背景色調整 */
+/* Background adjustment for dark mode visibility */
 body.dark-mode .full-width {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
+/* Individual tab buttons within the fill mode switcher */
 .mode-tab-btn {
-  flex: 1; /* ボタンを均等な幅に広げる */
+  flex: 1; /* Expand buttons to fill equal width */
   background: none;
   border: none;
   padding: 8px;
@@ -135,14 +431,18 @@ body.dark-mode .full-width {
   outline: none;
 }
 
-/* 選択されているボタンのスタイル */
+/* Active state for the selected mode tab */
 .mode-tab-btn.active {
   background: var(--btn-bg);
   color: var(--text-main);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
-/* 既存の .tab-container とデザインを統一するための微調整 */
+/* ==========================================================================
+   9. Visual Consistency Adjustments
+   ========================================================================== */
+
+/* Fine-tuning label spacing to match the new tab-container design */
 .control-group label {
   margin-top: 5px;
 }

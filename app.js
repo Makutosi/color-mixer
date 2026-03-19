@@ -3,15 +3,15 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   // =====================
-  // State
+  // 1. Application State
   // =====================
   const state = {
-    format: 'HEX',
-    randomMode: 'chaos'
+    format: 'HEX',        // Current display format: 'HEX' or 'RGB'
+    randomMode: 'chaos'   // Random algorithm: 'chaos' or 'harmonic'
   };
 
   // =====================
-  // DOM references
+  // 2.DOM references
   // =====================
   const DOM = {
     container: document.getElementById('drag-container'),
@@ -31,10 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
     favicon: document.getElementById('favicon'),
     chaosBtn: document.getElementById('chaos-btn'),
     harmonicBtn: document.getElementById('harmonic-btn'),
+    themeBtn: document.getElementById('theme-btn'),
   };
 
   // =====================
-  // Variant data
+  // 3. Configuration Data
   // =====================
   const variantsData = {
     'horizontal': [
@@ -69,8 +70,10 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // =====================
-  // Utility functions
+  // 4. Utility Functions (Color Conversions)
   // =====================
+
+  /** Converts HEX string to RGB string */
   const hexToRgb = (hex) => {
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
@@ -78,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return `rgb(${r}, ${g}, ${b})`;
   };
 
+  /** Converts HSL values to HEX string */
   const hslToHex = (h, s, l) => {
     l /= 100;
     const a = s * Math.min(l, 1 - l) / 100;
@@ -90,24 +94,23 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // =====================
-  // Data helpers
+  // 5. Data Helpers
   // =====================
-  function getCurrentPickers() {
-    return [...DOM.container.querySelectorAll('.color-picker')]
-      .filter(el => el.style.display !== 'none');
-  }
+  /** Get only visible color picker elements */
+  const getCurrentPickers = () => [...DOM.container.querySelectorAll('.color-picker')]
+    .filter(el => el.style.display !== 'none');
 
-  function getCurrentColors() {
-    return getCurrentPickers().map(p => p.querySelector('input').value);
-  }
+  /** Get array of current HEX values */
+  const getCurrentColors = () => getCurrentPickers().map(p => p.querySelector('input').value);
 
-  function getActiveFillMode() {
-    return document.querySelector('.mode-tab-btn.active').dataset.mode;
-  }
+  /** Determine if mode is 'gradient' or 'pattern' */
+  const getActiveFillMode = () => document.querySelector('.mode-tab-btn.active').dataset.mode;
 
-  // =====================
-  // Background generator
-  // =====================
+  // ==========================================
+  // 6. Background Engine
+  // ==========================================
+  
+  /** Generates CSS background property based on mode/style */
   function generateBackground(colors) {
     const mode = getActiveFillMode();
     let style = "";
@@ -119,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const variant = DOM.gradVariant.value;
 
+      // Special middle-point gradients using 3 color stops (color0 -> color1 -> color0)
       if (variant === 'middle-h')
         style = `linear-gradient(to bottom, ${colors[0]}, ${colors[1]}, ${colors[0]})`;
       else if (variant === 'middle-v')
@@ -135,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
         style = `linear-gradient(${variant}, ${colors.join(', ')})`;
 
     } else {
+      // Pattern Generation logic
       DOM.gradientArea.style.display = 'none';
       DOM.patternArea.style.display = 'flex';
 
@@ -150,25 +155,24 @@ document.addEventListener('DOMContentLoaded', () => {
         case "waves": style = `radial-gradient(circle at 50% 0, transparent 40%, ${fg} 41%, ${fg} 49%, transparent 50%), ${bg}`; size = "25px 15px"; break;
       }
     }
-
     return { style, size };
   }
 
-  // =====================
-  // UI updates
-  // =====================
-  function applyPreview({ style, size }) {
-    DOM.previewBox.style.background = style;
-    DOM.previewBox.style.backgroundSize = size;
-    DOM.gradientCss.textContent = `background: ${style};${size !== 'auto' ? ` background-size: ${size};` : ''}`;
-  }
-
+  // ==========================================
+  // 7. UI Update Engine
+  // ==========================================
+  
+  /** Master function to sync state with DOM */
   function updateUI() {
     const colors = getCurrentColors();
     const bg = generateBackground(colors);
-    applyPreview(bg);
 
-    // Calculate mixed color
+    // Apply background to preview box
+    DOM.previewBox.style.background = bg.style;
+    DOM.previewBox.style.backgroundSize = bg.size;
+    DOM.gradientCss.textContent = `background: ${bg.style};${bg.size !== 'auto' ? ` background-size: ${bg.size};` : ''}`;
+
+    // Calculate Average (Mixed) Color
     const avg = colors.reduce((acc, c) => {
       acc.r += parseInt(c.slice(1,3), 16);
       acc.g += parseInt(c.slice(3,5), 16);
@@ -178,25 +182,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const mixedHex = `#${Math.round(avg.r/colors.length).toString(16).padStart(2,'0')}${Math.round(avg.g/colors.length).toString(16).padStart(2,'0')}${Math.round(avg.b/colors.length).toString(16).padStart(2,'0')}`.toUpperCase();
     
+    // Update Result Labels
     DOM.mixedValue.textContent = mixedHex;
     DOM.headerDot.style.backgroundColor = mixedHex;
 
-    // Update Favicon
+    // Update Dynamic Favicon via Data URI
     const encoded = mixedHex.replace('#', '%23');
     DOM.favicon.setAttribute('href', `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="${encoded}"/></svg>`);
 
-    // Update labels
+    // Update Color Labels (HEX/RGB)
     getCurrentPickers().forEach(p => {
       const hex = p.querySelector('input').value.toUpperCase();
       p.querySelector('.code-label').textContent = state.format === 'HEX' ? hex : hexToRgb(hex);
     });
   }
 
-  // =====================
-  // Events
-  // =====================
+  // ==========================================
+  // 8. Event Listeners
+  // ==========================================
 
-  // Fill Mode Tabs
+  /** Tabs: Toggle Fill Mode (Gradient/Pattern) */
   document.querySelectorAll('.mode-tab-btn').forEach(btn => {
     btn.addEventListener('click', e => {
       document.querySelector('.mode-tab-btn.active').classList.remove('active');
@@ -205,7 +210,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Random Mode
+  /** Randomization logic */
+  const generateRandomColors = () => {
+    const inputs = DOM.container.querySelectorAll('input[type="color"]');
+    if (state.randomMode === 'harmonic') {
+      // Golden Ratio / Harmonic distribution of hue
+      const baseHue = Math.floor(Math.random() * 360);
+      inputs.forEach((input, index) => {
+        input.value = hslToHex((baseHue + index * 137.5) % 360, 65, 55);
+      });
+    } else {
+      // Pure chaos random
+      inputs.forEach(i => i.value = "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0'));
+    }
+    updateUI();
+  };
+
   DOM.chaosBtn.addEventListener('click', () => {
     state.randomMode = 'chaos';
     DOM.chaosBtn.classList.add('active');
@@ -220,45 +240,51 @@ document.addEventListener('DOMContentLoaded', () => {
     generateRandomColors();
   });
 
-  function generateRandomColors() {
-    const inputs = DOM.container.querySelectorAll('input[type="color"]');
-    if (state.randomMode === 'harmonic') {
-      const baseHue = Math.floor(Math.random() * 360);
-      inputs.forEach((input, index) => {
-        input.value = hslToHex((baseHue + index * 137.5) % 360, 65, 55);
-      });
-    } else {
-      inputs.forEach(i => i.value = "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0'));
-    }
+  /** Format Toggle (HEX/RGB) */
+  DOM.formatToggleBtn.addEventListener('click', () => {
+    state.format = state.format === 'HEX' ? 'RGB' : 'HEX';
+    DOM.formatToggleBtn.textContent = state.format;
+    DOM.formatToggleBtn.title = state.format === 'HEX' ? 'Switch to RGB' : 'Switch to HEX';
     updateUI();
-  }
+  });
 
-  // Copy functionality
-  function showToast(text) {
+  /** Theme Toggle (Light/Dark) */
+  DOM.themeBtn.addEventListener('click', () => {
+    const isDark = document.body.classList.toggle('dark-mode');
+    DOM.themeIcon.textContent = isDark ? '☾' : '☀︎';
+    DOM.themeBtn.title = isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+  });
+
+  /** Copy to Clipboard */
+  const showToast = (text) => {
     navigator.clipboard.writeText(text).then(() => {
       DOM.toastMsg.classList.add('show');
       setTimeout(() => DOM.toastMsg.classList.remove('show'), 1000);
     });
-  }
+  };
 
   document.addEventListener('click', e => {
     const target = e.target;
-    if (target.classList.contains('code-label')) {
-      showToast(target.textContent);
-    } else if (target.closest('#mixed-color-btn')) {
-      showToast(DOM.mixedValue.textContent);
-    } else if (target.closest('#gradient-css-btn')) {
-      showToast(DOM.gradientCss.textContent);
-    }
+    if (target.classList.contains('code-label')) showToast(target.textContent);
+    else if (target.closest('#mixed-color-btn')) showToast(DOM.mixedValue.textContent);
+    else if (target.closest('#gradient-css-btn')) showToast(DOM.gradientCss.textContent);
   });
 
-  // Init Variant Selector
+  /** Color Selection Count (2 or 3 colors) */
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      document.querySelector('.tab-btn.active').classList.remove('active');
+      e.target.classList.add('active');
+      document.getElementById('wrapper3').style.display = (e.target.dataset.count === "3") ? 'flex' : 'none';
+      updateUI();
+    });
+  });
+
+  /** Initialize and update Dropdown variants */
   function populateVariants() {
     const style = DOM.shadingStyle.value;
     const variants = variantsData[style];
     DOM.gradVariant.innerHTML = '';
-
-    // Hide Variant selector if only 1 option (e.g., From Center)
     DOM.variantGroup.style.display = variants.length <= 1 ? 'none' : 'block';
 
     variants.forEach(v => {
@@ -269,56 +295,25 @@ document.addEventListener('DOMContentLoaded', () => {
     updateUI();
   }
 
+  // Select/Input listeners
   DOM.shadingStyle.addEventListener('change', populateVariants);
   DOM.gradVariant.addEventListener('change', updateUI);
   DOM.patternStyle.addEventListener('change', updateUI);
-// --- この部分を書き換えます ---
-  DOM.formatToggleBtn.addEventListener('click', () => {
-    // 1. 状態を反転 (HEX ⇄ RGB)
-    state.format = state.format === 'HEX' ? 'RGB' : 'HEX';
-
-    // 2. ボタンの表示文字を更新
-    DOM.formatToggleBtn.textContent = state.format;
-
-    // 3. ツールチップ (title) を「次」の状態に合わせて更新
-    DOM.formatToggleBtn.title = state.format === 'HEX' ? 'Switch to RGB' : 'Switch to HEX';
-
-    // 4. UI全体（ラベルなど）を更新
-    updateUI();
-  });
-
-  // Color inputs
   document.querySelectorAll('input[type="color"]').forEach(i => i.addEventListener('input', updateUI));
 
-  // 2/3 Color Tabs
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', e => {
-      document.querySelector('.tab-btn.active').classList.remove('active');
-      e.target.classList.add('active');
-      document.getElementById('wrapper3').style.display = (e.target.dataset.count === "3") ? 'flex' : 'none';
-      updateUI();
-    });
-  });
-
-// Theme Toggle (ツールチップ連動版)
-  document.getElementById('theme-btn').addEventListener('click', () => {
-    const isDark = document.body.classList.toggle('dark-mode');
-    
-    // アイコンの切り替え
-    DOM.themeIcon.textContent = isDark ? '☾' : '☀︎';
-    
-    // ツールチップ（マウスを重ねた時の文字）の切り替え
-    const btn = document.getElementById('theme-btn');
-    btn.title = isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
-  });
-
-  // =====================
-  // Drag & Drop
-  // =====================
+  // ==========================================
+  // 9. Drag & Drop Logic
+  // ==========================================
   let draggedItem = null;
   DOM.container.querySelectorAll('.color-picker').forEach(picker => {
-    picker.addEventListener('dragstart', () => { draggedItem = picker; setTimeout(() => picker.classList.add('dragging'), 0); });
-    picker.addEventListener('dragend', () => { picker.classList.remove('dragging'); updateUI(); });
+    picker.addEventListener('dragstart', () => { 
+      draggedItem = picker; 
+      setTimeout(() => picker.classList.add('dragging'), 0); 
+    });
+    picker.addEventListener('dragend', () => { 
+      picker.classList.remove('dragging'); 
+      updateUI(); 
+    });
   });
 
   DOM.container.addEventListener('dragover', e => {
@@ -334,8 +329,8 @@ document.addEventListener('DOMContentLoaded', () => {
     else DOM.container.insertBefore(draggedItem, afterElement);
   });
 
-  // =====================
-  // Init
-  // =====================
+  // ==========================================
+  // 10. Application Initialization
+  // ==========================================
   populateVariants();
 });
