@@ -25,7 +25,7 @@ Along with inspiration from the Excel art of **Masako Wakamiya**, I created this
 ---
 
 ## 🚀 Live Demo & 🎉 Enjoy!
-Try the app here: [https://username.github.io/repo-name/](https://username.github.io/repo-name/)  
+Try the app here: [https://username.github.io/repo-name/](https://makutosi.github.io/color-mixer/)  
 Play with colors, mix gradients and patterns, and enjoy discovering new combinations! ✨
 
 ---
