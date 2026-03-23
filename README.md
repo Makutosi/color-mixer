@@ -19,13 +19,14 @@ Along with inspiration from the Excel art of **Masako Wakamiya**, I created this
 
 ## 💻 Screenshot
 <p align="center">
-  <img src="images/screenshot.png" alt="Color Mixer" width="400">
+  <img src="images/2026-colomixer-dark.png" alt="Color Mixer" width="400">
 </p>
 
 ---
 
 ## 🚀 Live Demo & 🎉 Enjoy!
-Try the app here: [https://username.github.io/repo-name/](https://makutosi.github.io/color-mixer/)  
+Try the app here: [Color Mixer](https://makutosi.github.io/color-mixer/)
+
 Play with colors, mix gradients and patterns, and enjoy discovering new combinations! ✨
 
 ---
