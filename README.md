@@ -19,7 +19,7 @@ Along with inspiration from the Excel art of **Masako Wakamiya**, I created this
 
 ## 💻 Screenshot
 <p align="center">
-  <img src="images/2026-colomixer-dark.png" alt="Color Mixer" width="400">
+  <img src="images/2026-colormixer-dark.png" alt="Color Mixer" width="400">
 </p>
 
 ---
