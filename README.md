@@ -38,7 +38,8 @@ Play with colors, mix gradients and patterns, and enjoy discovering new combinat
   * **Chaos Mode**: Purely random colors.
   * **Harmonic Mode**: Based on color theory (Golden Ratio) for aesthetic results.
 * **Gradients & Patterns**: Switch between smooth CSS gradients and various CSS patterns (Dots, Grid, Waves, etc.).
-* **Interactive UI**: Drag-and-drop to reorder colors and instantly see the result.
+* **Interactive UI**: Drag-and-drop to reorder colors.
+  * *Note: On mobile, use the color code label as a handle to drag.*
 * **Developer Friendly**: One-click copy for Hex/RGB values and CSS background properties.
 * **Dark Mode**: Fully themed for comfortable night-time usage.
 * **Dynamic Favicon**: The browser tab icon changes to your mixed color in real-time.
