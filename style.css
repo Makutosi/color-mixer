@@ -186,6 +186,7 @@ body.dark-mode .random-switch-container {
   gap: 24px;
 }
 
+/* Existing picker styles with mobile enhancements */
 .color-picker {
   display: flex;
   flex-direction: column;
@@ -193,6 +194,19 @@ body.dark-mode .random-switch-container {
   gap: 15px;
   cursor: grab;
   z-index: 2;
+
+  /* Prevent page scrolling while dragging on touch devices */
+  touch-action: none;
+
+  /* Prevent text selection during drag operations */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Visual feedback when an item is being dragged */
+.color-picker.dragging {
+  opacity: 0.4;
+  transform: scale(1.1);
 }
 
 /* The circular frame for the color input */

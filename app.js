@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     container: document.getElementById('drag-container'),
     shadingStyle: document.getElementById('shading-style'),
     gradVariant: document.getElementById('grad-variant'),
-    variantGroup: document.getElementById('variant-group'), // 追加
+    variantGroup: document.getElementById('variant-group'), 
     patternStyle: document.getElementById('pattern-style'),
     previewBox: document.getElementById('preview-box'),
     gradientArea: document.getElementById('gradient-area'),
@@ -305,28 +305,81 @@ document.addEventListener('DOMContentLoaded', () => {
   // 9. Drag & Drop Logic
   // ==========================================
   let draggedItem = null;
+
+  /**
+   * Reorder color pickers based on the current cursor/finger position
+   * @param {number} clientX - Current horizontal coordinate
+   */
+  function handleMove(clientX) {
+    if (!draggedItem) return;
+    
+    // Get all pickers except the one being dragged
+    const draggableElements = [...DOM.container.querySelectorAll('.color-picker:not(.dragging)')]
+      .filter(el => el.style.display !== 'none');
+
+    // Find the closest element to insert before
+    const afterElement = draggableElements.reduce((closest, child) => {
+      const box = child.getBoundingClientRect();
+      const offset = clientX - box.left - box.width / 2;
+      return (offset < 0 && offset > closest.offset) ? { offset, element: child } : closest;
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+
+    // Execute DOM reordering
+    if (!afterElement) {
+      DOM.container.insertBefore(draggedItem, DOM.formatToggleBtn);
+    } else {
+      DOM.container.insertBefore(draggedItem, afterElement);
+    }
+  }
+
+  // --- Desktop Mouse Events ---
   DOM.container.querySelectorAll('.color-picker').forEach(picker => {
     picker.addEventListener('dragstart', () => { 
       draggedItem = picker; 
+      // Delay adding class to ensure visibility during drag start
       setTimeout(() => picker.classList.add('dragging'), 0); 
     });
+    
     picker.addEventListener('dragend', () => { 
       picker.classList.remove('dragging'); 
+      draggedItem = null;
       updateUI(); 
     });
   });
 
   DOM.container.addEventListener('dragover', e => {
-    e.preventDefault();
-    const draggableElements = [...DOM.container.querySelectorAll('.color-picker:not(.dragging)')];
-    const afterElement = draggableElements.reduce((closest, child) => {
-      const box = child.getBoundingClientRect();
-      const offset = e.clientX - box.left - box.width / 2;
-      return (offset < 0 && offset > closest.offset) ? { offset, element: child } : closest;
-    }, { offset: Number.NEGATIVE_INFINITY }).element;
+    e.preventDefault(); // Enable drop consistency
+    handleMove(e.clientX);
+  });
 
-    if (!afterElement) DOM.container.insertBefore(draggedItem, DOM.formatToggleBtn);
-    else DOM.container.insertBefore(draggedItem, afterElement);
+  // --- Mobile Touch Events ---
+  DOM.container.addEventListener('touchstart', e => {
+    // 1. Only start dragging if the user touches the picker area BUT NOT the input itself.
+    // This allows the native color picker to open when clicking the circle.
+    // To drag/reorder, the user can grab the label (#HEX) or the area around it.
+    if (e.target.tagName === 'INPUT') return;
+
+    // 2. Find the picker element even if a child (label/input) is touched
+    const target = e.target.closest('.color-picker');
+    if (!target) return;
+    
+    draggedItem = target;
+    draggedItem.classList.add('dragging');
+  }, { passive: false });
+
+  DOM.container.addEventListener('touchmove', e => {
+    if (!draggedItem) return;
+    e.preventDefault(); // Prevent page scroll while dragging colors
+    const touch = e.touches[0];
+    handleMove(touch.clientX);
+  }, { passive: false });
+
+  DOM.container.addEventListener('touchend', () => {
+    if (draggedItem) {
+      draggedItem.classList.remove('dragging');
+      draggedItem = null;
+      updateUI(); // Refresh gradients after reordering
+    }
   });
 
   // ==========================================
